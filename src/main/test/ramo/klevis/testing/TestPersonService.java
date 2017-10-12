@@ -34,7 +34,7 @@ public class TestPersonService {
     }
 
     @Test(expected = PersonExistException.class)
-    public void shouldFailtToUpdatePersonWhenNotExisting() {
+    public void shouldFailToUpdatePersonWhenNotExisting() {
 
         Person person = new Person();
         person.setBirthDate(new Date());
