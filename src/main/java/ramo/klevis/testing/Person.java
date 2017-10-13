@@ -12,27 +12,6 @@ public class Person {
     private String surname;
     private Date birthDate;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Person person = (Person) o;
-
-        if (!socialSecurityNumber.equals(person.socialSecurityNumber)) return false;
-        if (!name.equals(person.name)) return false;
-        if (!surname.equals(person.surname)) return false;
-        return birthDate.equals(person.birthDate);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = socialSecurityNumber.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + surname.hashCode();
-        result = 31 * result + birthDate.hashCode();
-        return result;
-    }
 
     public String getSocialSecurityNumber() {
         return socialSecurityNumber;
@@ -64,5 +43,27 @@ public class Person {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        if (!socialSecurityNumber.equals(person.socialSecurityNumber)) return false;
+        if (!name.equals(person.name)) return false;
+        if (!surname.equals(person.surname)) return false;
+        return birthDate.equals(person.birthDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = socialSecurityNumber.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + surname.hashCode();
+        result = 31 * result + birthDate.hashCode();
+        return result;
     }
 }
