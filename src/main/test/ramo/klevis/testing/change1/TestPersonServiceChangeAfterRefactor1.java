@@ -1,4 +1,4 @@
-package ramo.klevis.testing;
+package ramo.klevis.testing.change1;
 
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
@@ -6,8 +6,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import ramo.klevis.testing.change1.PersonServiceChange1;
-import ramo.klevis.testing.entity.AddressDbo;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
@@ -24,7 +22,18 @@ import static org.mockito.Mockito.when;
 /**
  * Created by klevis.ramo on 10/12/2017.
  */
-public class TestPersonService {
+public class TestPersonServiceChangeAfterRefactor1 {
+
+    @Test
+    public void shouldSaveAddressedListPerEachPerson() {
+        Person modelPerson = createModelPerson();
+        ArrayList<Address> addressesModelList = new ArrayList<>();
+        modelPerson.setAddresses(addressesModelList);
+        Address addressModel = createAddressModel();
+        addressesModelList.add(addressModel);
+
+        assertPersonWasSavedWhenServiceCalled(modelPerson);
+    }
 
     @Test
     public void shouldSavePersonForFirstTime() {
@@ -88,7 +97,7 @@ public class TestPersonService {
 
     private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
         IPersonRepository mockPersonRepository = mockPersonRepository();
-        PersonService personService = new PersonService(mockPersonRepository);
+        PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository,new PersonConverter());
 
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
@@ -108,7 +117,7 @@ public class TestPersonService {
     private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson, boolean existSocialSecurityNumber) {
         IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
-        PersonService personService = new PersonService(mockPersonRepository);
+        PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository,new PersonConverter());
         when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
