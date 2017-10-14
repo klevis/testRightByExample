@@ -151,16 +151,6 @@ public class TestPersonService {
         return person;
     }
 
-    private AddressDbo createAddressDbo() {
-        AddressDbo addressDbo = new AddressDbo();
-        addressDbo.setCity("Muenchen");
-        addressDbo.setCountry("Deutschland");
-        addressDbo.setStreet("SomeStreet");
-        addressDbo.setHouseNumber("12");
-        addressDbo.setPostalCode("81888");
-        return addressDbo;
-    }
-
     private Address createAddressModel() {
         Address address = new Address();
         address.setCity("Muenchen");
