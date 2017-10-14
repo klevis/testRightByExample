@@ -26,21 +26,6 @@ import static org.mockito.Mockito.when;
  */
 public class TestPersonService {
 
-
-    @Test
-    public void shouldSaveAddressedListPerEachPerson() {
-        Person modelPerson = createModelPerson();
-        ArrayList<Address> addressesModelList = new ArrayList<>();
-        modelPerson.setAddresses(addressesModelList);
-        Address addressModel = createAddressModel();
-        addressesModelList.add(addressModel);
-
-        assertPersonWasSavedWhenServiceWithChangeOneCalled(modelPerson);
-
-//       assertPersonWasSavedWhenServiceCalled(modelPerson);
-
-    }
-
     @Test
     public void shouldSavePersonForFirstTime() {
         Person modelPerson = createModelPerson();
@@ -99,6 +84,11 @@ public class TestPersonService {
 
         callPersonUpdateService(dboPerson, modelPerson, true);
 
+    }
+
+    private void assertPersonWasSavedWhenREFACTORServiceCalled(Person modelPerson) {
+        PersonServiceChange1 personServiceChangeOne = new PersonServiceChange1(mockPersonRepository());
+        Assert.assertThat(personServiceChangeOne.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
     private void assertPersonWasSavedWhenServiceWithChangeOneCalled(Person modelPerson) {
