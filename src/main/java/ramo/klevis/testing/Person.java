@@ -52,18 +52,19 @@ public class Person {
 
         Person person = (Person) o;
 
-        if (!socialSecurityNumber.equals(person.socialSecurityNumber)) return false;
-        if (!name.equals(person.name)) return false;
-        if (!surname.equals(person.surname)) return false;
-        return birthDate.equals(person.birthDate);
+        if (socialSecurityNumber != null ? !socialSecurityNumber.equals(person.socialSecurityNumber) : person.socialSecurityNumber != null)
+            return false;
+        if (name != null ? !name.equals(person.name) : person.name != null) return false;
+        if (surname != null ? !surname.equals(person.surname) : person.surname != null) return false;
+        return birthDate != null ? birthDate.equals(person.birthDate) : person.birthDate == null;
     }
 
     @Override
     public int hashCode() {
-        int result = socialSecurityNumber.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + surname.hashCode();
-        result = 31 * result + birthDate.hashCode();
+        int result = socialSecurityNumber != null ? socialSecurityNumber.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         return result;
     }
 }

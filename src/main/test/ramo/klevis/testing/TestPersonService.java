@@ -1,10 +1,13 @@
 package ramo.klevis.testing;
 
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import ramo.klevis.testing.entity.PersonDbo;
+import ramo.klevis.testing.exception.PersonNotExistException;
+import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
+import ramo.klevis.testing.repository.IPersonRepository;
 
 import java.util.Date;
 
@@ -16,55 +19,118 @@ import static org.mockito.Mockito.when;
  */
 public class TestPersonService {
 
+
     @Test
     public void shouldSavePersonForFirstTime() {
 
-        Person person = new Person();
-        person.setBirthDate(new Date());
-        person.setName("Klevis");
-        person.setSurname("Ramo");
-        person.setSocialSecurityNumber("12345");
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
 
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((Person) any())).thenReturn(person);
-        PersonService personService = new PersonService(mockPersonRepository);
-
-        Assert.assertThat(personService.savePerson(person), IsEqual.equalTo(person));
+        callPersonService(dboPerson, modelPerson);
 
     }
 
-    @Test(expected = PersonExistException.class)
+    @Test(expected = PersonRequiredFieldsMissingException.class)
+    public void shouldNotSavePersonWhenNameIsNull() {
+
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
+        dboPerson.setName(null);
+        modelPerson.setName(null);
+
+        callPersonService(dboPerson, modelPerson);
+
+    }
+
+
+    @Test(expected = PersonRequiredFieldsMissingException.class)
+    public void shouldNotSavePersonWhenSurnameIsNull() {
+
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
+        dboPerson.setSurname(null);
+        modelPerson.setSurname(null);
+
+        callPersonService(dboPerson, modelPerson);
+
+    }
+
+    @Test(expected = PersonRequiredFieldsMissingException.class)
+    public void shouldNotSavePersonWhenBirthdateIsNull() {
+
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
+        dboPerson.setBirthDate(null);
+        modelPerson.setBirthDate(null);
+
+        callPersonService(dboPerson, modelPerson);
+
+    }
+
+    @Test(expected = PersonRequiredFieldsMissingException.class)
+    public void shouldNotSavePersonWhenSocialNumberIsNull() {
+
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
+        dboPerson.setSocialSecurityNumber(null);
+        modelPerson.setSocialSecurityNumber(null);
+
+        callPersonService(dboPerson, modelPerson);
+
+    }
+
+    @Test(expected = PersonNotExistException.class)
     public void shouldFailToUpdatePersonWhenNotExisting() {
 
-        Person person = new Person();
-        person.setBirthDate(new Date());
-        person.setName("Klevis");
-        person.setSurname("Ramo");
-        person.setSocialSecurityNumber("12345");
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
 
         IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((Person) any())).thenReturn(person);
+        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
         PersonService personService = new PersonService(mockPersonRepository);
 
-        Assert.assertThat(personService.updatePerson(person), IsEqual.equalTo(person));
+        Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
 
     }
 
     @Test
     public void shouldUpdatePersonWhenExisting() {
 
+        PersonDbo dboPerson = createDboPerson();
+        Person modelPerson = createModelPerson();
+
+        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
+        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
+        when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(true);
+        PersonService personService = new PersonService(mockPersonRepository);
+
+        Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
+    }
+
+    private void callPersonService(PersonDbo dboPerson, Person modelPerson) {
+        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
+        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
+        PersonService personService = new PersonService(mockPersonRepository);
+
+        Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
+    }
+
+
+    private PersonDbo createDboPerson() {
+        PersonDbo person = new PersonDbo();
+        person.setBirthDate(new Date());
+        person.setName("Klevis");
+        person.setSurname("Ramo");
+        person.setSocialSecurityNumber("12345");
+        return person;
+    }
+
+    private Person createModelPerson() {
         Person person = new Person();
         person.setBirthDate(new Date());
         person.setName("Klevis");
         person.setSurname("Ramo");
         person.setSocialSecurityNumber("12345");
-
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((Person) any())).thenReturn(person);
-        when(mockPersonRepository.exists(person.getSocialSecurityNumber())).thenReturn(true);
-        PersonService personService = new PersonService(mockPersonRepository);
-
-        Assert.assertThat(personService.updatePerson(person), IsEqual.equalTo(person));
-
+        return person;
     }
 }

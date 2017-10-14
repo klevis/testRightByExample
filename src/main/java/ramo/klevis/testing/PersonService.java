@@ -1,11 +1,16 @@
 package ramo.klevis.testing;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import ramo.klevis.testing.entity.PersonDbo;
+import ramo.klevis.testing.exception.PersonNotExistException;
+import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
+import ramo.klevis.testing.repository.IPersonRepository;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
  */
-public class PersonService implements IPersonService{
+public class PersonService implements IPersonService {
 
     private IPersonRepository personDao;
 
@@ -17,16 +22,55 @@ public class PersonService implements IPersonService{
     @Override
     public Person savePerson(Person person) {
 
-        return personDao.save(person);
+        if (areRequiredFieldFilled(person)) {
+            PersonDbo savedPerson = personDao.save(convertToDbo(person));
+            Person personResponse = convertToModel(savedPerson);
+            return personResponse;
+        } else {
+            throw new PersonRequiredFieldsMissingException("Required Fields for Person are missing!" + person.toString());
+        }
     }
+
+
     @Override
     public Person updatePerson(Person person) {
 
-        if(personDao.exists(person.getSocialSecurityNumber())) {
-            return personDao.save(person);
-        }else{
-            throw new PersonExistException("Cannot Update Person is not existing");
+        if (personDao.exists(person.getSocialSecurityNumber())) {
+            PersonDbo savedPerson = personDao.save(convertToDbo(person));
+            Person personResponse = convertToModel(savedPerson);
+            return personResponse;
+        } else {
+            throw new PersonNotExistException("Cannot Update Person is not existing");
         }
 
+    }
+
+    /*
+Convert to Data base object
+ */
+    private PersonDbo convertToDbo(Person person) {
+
+        PersonDbo personDbo = new PersonDbo();
+        personDbo.setSocialSecurityNumber(person.getSocialSecurityNumber());
+        personDbo.setSurname(person.getSurname());
+        personDbo.setName(person.getName());
+        personDbo.setBirthDate(person.getBirthDate());
+        return personDbo;
+    }
+
+    private Person convertToModel(PersonDbo personDbo) {
+        Person person = new Person();
+        person.setSocialSecurityNumber(personDbo.getSocialSecurityNumber());
+        person.setSurname(personDbo.getSurname());
+        person.setName(personDbo.getName());
+        person.setBirthDate(personDbo.getBirthDate());
+        return person;
+    }
+
+    private boolean areRequiredFieldFilled(Person person) {
+        return person.getBirthDate() != null &&
+                !StringUtils.isEmpty(person.getName()) &&
+                !StringUtils.isEmpty(person.getSurname()) &&
+                !StringUtils.isEmpty(person.getSocialSecurityNumber());
     }
 }
