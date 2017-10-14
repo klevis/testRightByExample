@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import ramo.klevis.testing.change1.PersonServiceChange1;
 import ramo.klevis.testing.entity.AddressDbo;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
@@ -29,19 +30,19 @@ public class TestPersonService {
     @Test
     public void shouldSaveAddressedListPerEachPerson() {
         Person modelPerson = createModelPerson();
-        ArrayList<Address> addressesModelList = new ArrayList<Address>();
+        ArrayList<Address> addressesModelList = new ArrayList<>();
+        modelPerson.setAddresses(addressesModelList);
         Address addressModel = createAddressModel();
         addressesModelList.add(addressModel);
-        modelPerson.setAddresses(addressesModelList);
 
-        callPersonSaveService(modelPerson);
+        assertPersonWasSavedWhenServiceWithChangeOneCalled(modelPerson);
 
     }
 
     @Test
     public void shouldSavePersonForFirstTime() {
         Person modelPerson = createModelPerson();
-        callPersonSaveService(modelPerson);
+        assertPersonWasSavedWhenServiceCalled(modelPerson);
 
     }
 
@@ -49,7 +50,7 @@ public class TestPersonService {
     public void shouldNotSavePersonWhenNameIsNull() {
         Person modelPerson = createModelPerson();
         modelPerson.setName(null);
-        callPersonSaveService(modelPerson);
+        assertPersonWasSavedWhenServiceCalled(modelPerson);
 
     }
 
@@ -58,7 +59,7 @@ public class TestPersonService {
     public void shouldNotSavePersonWhenSurnameIsNull() {
         Person modelPerson = createModelPerson();
         modelPerson.setSurname(null);
-        callPersonSaveService(modelPerson);
+        assertPersonWasSavedWhenServiceCalled(modelPerson);
 
     }
 
@@ -66,7 +67,7 @@ public class TestPersonService {
     public void shouldNotSavePersonWhenBirthdateIsNull() {
         Person modelPerson = createModelPerson();
         modelPerson.setBirthDate(null);
-        callPersonSaveService(modelPerson);
+        assertPersonWasSavedWhenServiceCalled(modelPerson);
 
     }
 
@@ -74,7 +75,7 @@ public class TestPersonService {
     public void shouldNotSavePersonWhenSocialNumberIsNull() {
         Person modelPerson = createModelPerson();
         modelPerson.setSocialSecurityNumber(null);
-        callPersonSaveService(modelPerson);
+        assertPersonWasSavedWhenServiceCalled(modelPerson);
 
     }
 
@@ -98,7 +99,19 @@ public class TestPersonService {
 
     }
 
-    private void callPersonSaveService(Person modelPerson) {
+    private void assertPersonWasSavedWhenServiceWithChangeOneCalled(Person modelPerson) {
+        PersonServiceChange1 personServiceChangeOne = new PersonServiceChange1(mockPersonRepository());
+        Assert.assertThat(personServiceChangeOne.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
+    }
+
+    private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
+        IPersonRepository mockPersonRepository = mockPersonRepository();
+        PersonService personService = new PersonService(mockPersonRepository);
+
+        Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
+    }
+
+    private IPersonRepository mockPersonRepository() {
         IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenAnswer(new Answer<PersonDbo>() {
             @Override
@@ -107,9 +120,7 @@ public class TestPersonService {
                 return o;
             }
         });
-        PersonService personService = new PersonService(mockPersonRepository);
-
-        Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
+        return mockPersonRepository;
     }
 
     private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson, boolean existSocialSecurityNumber) {
