@@ -1,6 +1,7 @@
 package ramo.klevis.testing.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
@@ -11,7 +12,15 @@ public class Person {
     private String name;
     private String surname;
     private Date birthDate;
+    private List<Address> addresses;
 
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
 
     public String getSocialSecurityNumber() {
         return socialSecurityNumber;
@@ -56,7 +65,8 @@ public class Person {
             return false;
         if (name != null ? !name.equals(person.name) : person.name != null) return false;
         if (surname != null ? !surname.equals(person.surname) : person.surname != null) return false;
-        return birthDate != null ? birthDate.equals(person.birthDate) : person.birthDate == null;
+        if (birthDate != null ? !birthDate.equals(person.birthDate) : person.birthDate != null) return false;
+        return addresses != null ? addresses.equals(person.addresses) : person.addresses == null;
     }
 
     @Override
@@ -65,6 +75,18 @@ public class Person {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (surname != null ? surname.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
+        result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "socialSecurityNumber='" + socialSecurityNumber + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthDate=" + birthDate +
+                ", addresses=" + addresses +
+                '}';
     }
 }

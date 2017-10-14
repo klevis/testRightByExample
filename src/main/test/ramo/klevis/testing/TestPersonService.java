@@ -4,12 +4,17 @@ import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import ramo.klevis.testing.entity.AddressDbo;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
+import ramo.klevis.testing.model.Address;
 import ramo.klevis.testing.model.Person;
 import ramo.klevis.testing.repository.IPersonRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
@@ -22,61 +27,54 @@ public class TestPersonService {
 
 
     @Test
-    public void shouldSavePersonForFirstTime() {
-
-        PersonDbo dboPerson = createDboPerson();
+    public void shouldSaveAddressedListPerEachPerson() {
         Person modelPerson = createModelPerson();
+        ArrayList<Address> addressesModelList = new ArrayList<Address>();
+        Address addressModel = createAddressModel();
+        addressesModelList.add(addressModel);
+        modelPerson.setAddresses(addressesModelList);
 
-        callPersonSaveService(dboPerson, modelPerson);
+        callPersonSaveService(modelPerson);
+
+    }
+
+    @Test
+    public void shouldSavePersonForFirstTime() {
+        Person modelPerson = createModelPerson();
+        callPersonSaveService(modelPerson);
 
     }
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
     public void shouldNotSavePersonWhenNameIsNull() {
-
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
-        dboPerson.setName(null);
         modelPerson.setName(null);
-
-        callPersonSaveService(dboPerson, modelPerson);
+        callPersonSaveService(modelPerson);
 
     }
 
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
     public void shouldNotSavePersonWhenSurnameIsNull() {
-
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
-        dboPerson.setSurname(null);
         modelPerson.setSurname(null);
-
-        callPersonSaveService(dboPerson, modelPerson);
+        callPersonSaveService(modelPerson);
 
     }
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
     public void shouldNotSavePersonWhenBirthdateIsNull() {
-
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
-        dboPerson.setBirthDate(null);
         modelPerson.setBirthDate(null);
-
-        callPersonSaveService(dboPerson, modelPerson);
+        callPersonSaveService(modelPerson);
 
     }
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
     public void shouldNotSavePersonWhenSocialNumberIsNull() {
-
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
-        dboPerson.setSocialSecurityNumber(null);
         modelPerson.setSocialSecurityNumber(null);
-
-        callPersonSaveService(dboPerson, modelPerson);
+        callPersonSaveService(modelPerson);
 
     }
 
@@ -86,7 +84,7 @@ public class TestPersonService {
         PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        callPersonUpdateService(dboPerson, modelPerson,false);
+        callPersonUpdateService(dboPerson, modelPerson, false);
 
     }
 
@@ -96,25 +94,32 @@ public class TestPersonService {
         PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        callPersonUpdateService(dboPerson, modelPerson,true);
+        callPersonUpdateService(dboPerson, modelPerson, true);
 
     }
 
-    private void callPersonSaveService(PersonDbo dboPerson, Person modelPerson) {
+    private void callPersonSaveService(Person modelPerson) {
         IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
+        when(mockPersonRepository.save((PersonDbo) any())).thenAnswer(new Answer<PersonDbo>() {
+            @Override
+            public PersonDbo answer(InvocationOnMock invocationOnMock) throws Throwable {
+                PersonDbo o = (PersonDbo) invocationOnMock.getArguments()[0];
+                return o;
+            }
+        });
         PersonService personService = new PersonService(mockPersonRepository);
 
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson,boolean existSocialSecurityNumber) {
+    private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson, boolean existSocialSecurityNumber) {
         IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
         PersonService personService = new PersonService(mockPersonRepository);
         when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
+
     private PersonDbo createDboPerson() {
         PersonDbo person = new PersonDbo();
         person.setBirthDate(new Date());
@@ -131,5 +136,25 @@ public class TestPersonService {
         person.setSurname("Ramo");
         person.setSocialSecurityNumber("12345");
         return person;
+    }
+
+    private AddressDbo createAddressDbo() {
+        AddressDbo addressDbo = new AddressDbo();
+        addressDbo.setCity("Muenchen");
+        addressDbo.setCountry("Deutschland");
+        addressDbo.setStreet("SomeStreet");
+        addressDbo.setHouseNumber("12");
+        addressDbo.setPostalCode("81888");
+        return addressDbo;
+    }
+
+    private Address createAddressModel() {
+        Address address = new Address();
+        address.setCity("Muenchen");
+        address.setCountry("Deutschland");
+        address.setStreet("SomeStreet");
+        address.setHouseNumber("12");
+        address.setPostalCode("81888");
+        return address;
     }
 }
