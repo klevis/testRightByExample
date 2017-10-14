@@ -1,6 +1,7 @@
 package ramo.klevis.testing;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
@@ -20,6 +21,7 @@ public class PersonService implements IPersonService {
     }
 
     @Override
+    @Transactional
     public Person savePerson(Person person) {
 
         if (areRequiredFieldFilled(person)) {
@@ -33,6 +35,7 @@ public class PersonService implements IPersonService {
 
 
     @Override
+    @Transactional
     public Person updatePerson(Person person) {
 
         if (personDao.exists(person.getSocialSecurityNumber())) {
@@ -45,9 +48,12 @@ public class PersonService implements IPersonService {
 
     }
 
-    /*
-Convert to Data base object
- */
+    /**
+     * Convert to Database object
+     *
+     * @param person
+     * @return
+     */
     private PersonDbo convertToDbo(Person person) {
 
         PersonDbo personDbo = new PersonDbo();
@@ -58,6 +64,12 @@ Convert to Data base object
         return personDbo;
     }
 
+    /**
+     * Convert to Model object
+     *
+     * @param personDbo
+     * @return
+     */
     private Person convertToModel(PersonDbo personDbo) {
         Person person = new Person();
         person.setSocialSecurityNumber(personDbo.getSocialSecurityNumber());

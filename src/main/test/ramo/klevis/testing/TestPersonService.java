@@ -26,7 +26,7 @@ public class TestPersonService {
         PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        callPersonService(dboPerson, modelPerson);
+        callPersonSaveService(dboPerson, modelPerson);
 
     }
 
@@ -38,7 +38,7 @@ public class TestPersonService {
         dboPerson.setName(null);
         modelPerson.setName(null);
 
-        callPersonService(dboPerson, modelPerson);
+        callPersonSaveService(dboPerson, modelPerson);
 
     }
 
@@ -51,7 +51,7 @@ public class TestPersonService {
         dboPerson.setSurname(null);
         modelPerson.setSurname(null);
 
-        callPersonService(dboPerson, modelPerson);
+        callPersonSaveService(dboPerson, modelPerson);
 
     }
 
@@ -63,7 +63,7 @@ public class TestPersonService {
         dboPerson.setBirthDate(null);
         modelPerson.setBirthDate(null);
 
-        callPersonService(dboPerson, modelPerson);
+        callPersonSaveService(dboPerson, modelPerson);
 
     }
 
@@ -75,7 +75,7 @@ public class TestPersonService {
         dboPerson.setSocialSecurityNumber(null);
         modelPerson.setSocialSecurityNumber(null);
 
-        callPersonService(dboPerson, modelPerson);
+        callPersonSaveService(dboPerson, modelPerson);
 
     }
 
@@ -85,11 +85,7 @@ public class TestPersonService {
         PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
-        PersonService personService = new PersonService(mockPersonRepository);
-
-        Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
+        callPersonUpdateService(dboPerson, modelPerson,false);
 
     }
 
@@ -99,15 +95,11 @@ public class TestPersonService {
         PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
-        when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(true);
-        PersonService personService = new PersonService(mockPersonRepository);
+        callPersonUpdateService(dboPerson, modelPerson,true);
 
-        Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private void callPersonService(PersonDbo dboPerson, Person modelPerson) {
+    private void callPersonSaveService(PersonDbo dboPerson, Person modelPerson) {
         IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
         PersonService personService = new PersonService(mockPersonRepository);
@@ -115,7 +107,13 @@ public class TestPersonService {
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-
+    private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson,boolean existSocialSecurityNumber) {
+        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
+        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
+        PersonService personService = new PersonService(mockPersonRepository);
+        when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
+        Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
+    }
     private PersonDbo createDboPerson() {
         PersonDbo person = new PersonDbo();
         person.setBirthDate(new Date());
