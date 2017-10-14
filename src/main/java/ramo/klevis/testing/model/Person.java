@@ -1,4 +1,4 @@
-package ramo.klevis.testing;
+package ramo.klevis.testing.model;
 
 import java.util.Date;
 

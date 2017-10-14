@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
+import ramo.klevis.testing.model.Person;
 import ramo.klevis.testing.repository.IPersonRepository;
 
 /**
