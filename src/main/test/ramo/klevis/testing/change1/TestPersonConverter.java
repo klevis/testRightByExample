@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Created by klevis.ramo on 10/15/2017.
  */
-public class PersonConverterTest {
+public class TestPersonConverter {
 
 
     @Test

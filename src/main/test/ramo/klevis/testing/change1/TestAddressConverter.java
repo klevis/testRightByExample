@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * Created by klevis.ramo on 10/15/2017.
  */
-public class AddressConverterTest {
+public class TestAddressConverter {
 
     @Test
     public void convertToModel() throws Exception {
