@@ -1,6 +1,7 @@
 package ramo.klevis.testing.change1;
 
 import org.hamcrest.core.Is;
+import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import ramo.klevis.testing.TestData;
 import ramo.klevis.testing.entity.AddressDbo;
@@ -22,6 +23,18 @@ public class TestAddressConverter {
         assertThat(addressDbo.getHouseNumber(), Is.is(addressModel.getHouseNumber()));
         assertThat(addressDbo.getPostalCode(), Is.is(addressModel.getPostalCode()));
         assertThat(addressDbo.getStreet(), Is.is(addressModel.getStreet()));
+    }
+
+    @Test
+    public void shouldReturnNUllWhenDboNull() {
+        Address address = new AddressConverter().convertToModel(null);
+        assertThat(address, IsNull.nullValue());
+    }
+
+    @Test
+    public void shouldReturnNUllWhenModelNull() {
+        AddressDbo addressDbo = new AddressConverter().convertToDbo(null);
+        assertThat(addressDbo, IsNull.nullValue());
     }
 
     @Test

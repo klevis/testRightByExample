@@ -17,6 +17,9 @@ public class PersonConverter implements Converter<Person, PersonDbo> {
 
     @Override
     public Person convertToModel(PersonDbo personDbo) {
+        if (personDbo == null) {
+            return null;
+        }
         Person person = new Person();
         person.setSocialSecurityNumber(personDbo.getSocialSecurityNumber());
         person.setSurname(personDbo.getSurname());
@@ -31,6 +34,9 @@ public class PersonConverter implements Converter<Person, PersonDbo> {
 
     @Override
     public PersonDbo convertToDbo(Person person) {
+        if (person == null) {
+            return null;
+        }
         PersonDbo personDbo = new PersonDbo();
         personDbo.setSocialSecurityNumber(person.getSocialSecurityNumber());
         personDbo.setSurname(person.getSurname());

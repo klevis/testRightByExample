@@ -1,9 +1,12 @@
 package ramo.klevis.testing.change1;
 
 import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNull;
 import org.junit.Test;
 import ramo.klevis.testing.TestData;
+import ramo.klevis.testing.entity.AddressDbo;
 import ramo.klevis.testing.entity.PersonDbo;
+import ramo.klevis.testing.model.Address;
 import ramo.klevis.testing.model.Person;
 
 import static org.junit.Assert.assertThat;
@@ -23,6 +26,19 @@ public class TestPersonConverter {
         assertThat(dboPerson.getName(), IsEqual.equalTo(person.getName()));
         assertThat(dboPerson.getSocialSecurityNumber(), IsEqual.equalTo(person.getSocialSecurityNumber()));
         assertThat(dboPerson.getSurname(), IsEqual.equalTo(person.getSurname()));
+    }
+
+
+    @Test
+    public void shouldReturnNUllWhenDboNull() {
+        Person person = new PersonConverter().convertToModel(null);
+        assertThat(person, IsNull.nullValue());
+    }
+
+    @Test
+    public void shouldReturnNUllWhenModelNull() {
+        PersonDbo dboPerson = new PersonConverter().convertToDbo(null);
+        assertThat(dboPerson, IsNull.nullValue());
     }
 
     @Test

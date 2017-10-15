@@ -10,6 +10,9 @@ public class AddressConverter implements Converter<Address, AddressDbo> {
 
     @Override
     public Address convertToModel(AddressDbo addressDbo) {
+        if (addressDbo == null) {
+            return null;
+        }
         Address address = new Address();
         address.setPostalCode(addressDbo.getPostalCode());
         address.setStreet(addressDbo.getStreet());
@@ -21,6 +24,9 @@ public class AddressConverter implements Converter<Address, AddressDbo> {
 
     @Override
     public AddressDbo convertToDbo(Address address) {
+        if (address == null) {
+            return null;
+        }
         AddressDbo addressDbo = new AddressDbo();
         addressDbo.setPostalCode(address.getPostalCode());
         addressDbo.setStreet(address.getStreet());
