@@ -25,7 +25,6 @@ public class TestPersonService {
     public void shouldSavePersonForFirstTime() {
         Person modelPerson = TestData.createModelPerson();
         assertPersonWasSavedWhenServiceCalled(modelPerson);
-
     }
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
@@ -33,16 +32,13 @@ public class TestPersonService {
         Person modelPerson = TestData.createModelPerson();
         modelPerson.setName(null);
         assertPersonWasSavedWhenServiceCalled(modelPerson);
-
     }
-
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
     public void shouldNotSavePersonWhenSurnameIsNull() {
         Person modelPerson = TestData.createModelPerson();
         modelPerson.setSurname(null);
         assertPersonWasSavedWhenServiceCalled(modelPerson);
-
     }
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
@@ -50,7 +46,6 @@ public class TestPersonService {
         Person modelPerson = TestData.createModelPerson();
         modelPerson.setBirthDate(null);
         assertPersonWasSavedWhenServiceCalled(modelPerson);
-
     }
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
@@ -58,25 +53,18 @@ public class TestPersonService {
         Person modelPerson = TestData.createModelPerson();
         modelPerson.setSocialSecurityNumber(null);
         assertPersonWasSavedWhenServiceCalled(modelPerson);
-
     }
 
     @Test(expected = PersonNotExistException.class)
     public void shouldFailToUpdatePersonWhenNotExisting() {
-
         Person modelPerson = TestData.createModelPerson();
-
         callPersonUpdateService(modelPerson, false);
-
     }
 
     @Test
     public void shouldUpdatePersonWhenExisting() {
-
         Person modelPerson = TestData.createModelPerson();
-
         callPersonUpdateService(modelPerson, true);
-
     }
 
     private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
