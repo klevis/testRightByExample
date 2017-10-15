@@ -9,7 +9,7 @@ import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
 import ramo.klevis.testing.model.Person;
-import ramo.klevis.testing.repository.IPersonRepository;
+import ramo.klevis.testing.repository.IPersonDao;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
@@ -17,12 +17,12 @@ import ramo.klevis.testing.repository.IPersonRepository;
 @SuppressWarnings("ALL")
 public class PersonServiceChange2 implements IPersonService {
 
-    private IPersonRepository personDao;
+    private IPersonDao personDao;
 
     private Converter<Person, PersonDbo> personPersonDboConverter;
 
     @Autowired
-    public PersonServiceChange2(IPersonRepository personDao, Converter<Person, PersonDbo> personPersonDboConverter) {
+    public PersonServiceChange2(IPersonDao personDao, Converter<Person, PersonDbo> personPersonDboConverter) {
         this.personDao = personDao;
         this.personPersonDboConverter = personPersonDboConverter;
     }

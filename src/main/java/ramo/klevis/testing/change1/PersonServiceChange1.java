@@ -10,7 +10,7 @@ import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
 import ramo.klevis.testing.model.Address;
 import ramo.klevis.testing.model.Person;
-import ramo.klevis.testing.repository.IPersonRepository;
+import ramo.klevis.testing.repository.IPersonDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 @SuppressWarnings("ALL")
 public class PersonServiceChange1 implements IPersonService {
 
-    private IPersonRepository personDao;
+    private IPersonDao personDao;
 
     @Autowired
-    public PersonServiceChange1(IPersonRepository personDao) {
+    public PersonServiceChange1(IPersonDao personDao) {
         this.personDao = personDao;
     }
 

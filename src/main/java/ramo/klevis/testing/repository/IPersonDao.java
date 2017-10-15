@@ -8,5 +8,5 @@ import ramo.klevis.testing.entity.PersonDbo;
  * Created by klevis.ramo on 10/12/2017.
  */
 @Component
-public interface IPersonRepository extends JpaRepository<PersonDbo, String> {
+public interface IPersonDao extends JpaRepository<PersonDbo, String> {
 }

@@ -12,7 +12,7 @@ import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
 import ramo.klevis.testing.model.Address;
 import ramo.klevis.testing.model.Person;
-import ramo.klevis.testing.repository.IPersonRepository;
+import ramo.klevis.testing.repository.IPersonDao;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class TestPersonServiceRefactorChange2 {
 
     @Test(expected = PersonRequiredFieldsMissingException.class)
     public void testBug1345NullPointerWhenNullPerson() {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonServiceChange2 personService = new PersonServiceChange2(mockPersonRepository, new PersonConverter());
         personService.savePerson(null);
     }
@@ -101,14 +101,14 @@ public class TestPersonServiceRefactorChange2 {
     }
 
     private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonServiceRefactorChange2 personService = new PersonServiceRefactorChange2(mockPersonRepository, new PersonConverterChangeRefactor2());
 
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private IPersonRepository mockPersonRepository() {
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
+    private IPersonDao mockPersonRepository() {
+        IPersonDao mockPersonRepository = Mockito.mock(IPersonDao.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenAnswer(new Answer<PersonDbo>() {
             @Override
             public PersonDbo answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -120,7 +120,7 @@ public class TestPersonServiceRefactorChange2 {
     }
 
     private void callPersonUpdateService(Person modelPerson, boolean existSocialSecurityNumber) {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonServiceRefactorChange2 personService = new PersonServiceRefactorChange2(mockPersonRepository, new PersonConverterChangeRefactor2());
         when(mockPersonRepository.exists(modelPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));

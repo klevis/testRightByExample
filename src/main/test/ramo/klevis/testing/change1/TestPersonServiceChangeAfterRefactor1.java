@@ -11,7 +11,7 @@ import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
 import ramo.klevis.testing.model.Address;
 import ramo.klevis.testing.model.Person;
-import ramo.klevis.testing.repository.IPersonRepository;
+import ramo.klevis.testing.repository.IPersonDao;
 
 import java.util.ArrayList;
 
@@ -92,14 +92,14 @@ public class TestPersonServiceChangeAfterRefactor1 {
     }
 
     private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository, new PersonConverter());
 
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private IPersonRepository mockPersonRepository() {
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
+    private IPersonDao mockPersonRepository() {
+        IPersonDao mockPersonRepository = Mockito.mock(IPersonDao.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenAnswer(new Answer<PersonDbo>() {
             @Override
             public PersonDbo answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -111,7 +111,7 @@ public class TestPersonServiceChangeAfterRefactor1 {
     }
 
     private void callPersonUpdateService(Person modelPerson, boolean existSocialSecurityNumber) {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository, new PersonConverter());
         when(mockPersonRepository.exists(modelPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));

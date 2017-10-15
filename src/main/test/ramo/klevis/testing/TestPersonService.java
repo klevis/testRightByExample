@@ -4,17 +4,14 @@ import org.hamcrest.core.IsEqual;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
 import ramo.klevis.testing.model.Person;
-import ramo.klevis.testing.repository.IPersonRepository;
+import ramo.klevis.testing.repository.IPersonDao;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static ramo.klevis.testing.TestData.createDboPerson;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
@@ -68,14 +65,14 @@ public class TestPersonService {
     }
 
     private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonService personService = new PersonService(mockPersonRepository);
 
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private IPersonRepository mockPersonRepository() {
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
+    private IPersonDao mockPersonRepository() {
+        IPersonDao mockPersonRepository = Mockito.mock(IPersonDao.class);
         when(mockPersonRepository.save((PersonDbo) any())).thenAnswer(invocationOnMock -> {
             PersonDbo o = (PersonDbo) invocationOnMock.getArguments()[0];
             return o;
@@ -84,7 +81,7 @@ public class TestPersonService {
     }
 
     private void callPersonUpdateService(Person modelPerson, boolean existSocialSecurityNumber) {
-        IPersonRepository mockPersonRepository = mockPersonRepository();
+        IPersonDao mockPersonRepository = mockPersonRepository();
         PersonService personService = new PersonService(mockPersonRepository);
         when(mockPersonRepository.exists(modelPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));

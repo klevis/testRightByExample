@@ -9,7 +9,7 @@ import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
 import ramo.klevis.testing.model.Person;
-import ramo.klevis.testing.repository.IPersonRepository;
+import ramo.klevis.testing.repository.IPersonDao;
 
 import java.util.Optional;
 
@@ -21,12 +21,12 @@ import static java.util.Optional.*;
 @SuppressWarnings("ALL")
 public class PersonServiceRefactorChange2 implements IPersonService {
 
-    private IPersonRepository personDao;
+    private IPersonDao personDao;
 
     private Converter<Optional<Person>, Optional<PersonDbo>> personPersonDboConverter;
 
     @Autowired
-    public PersonServiceRefactorChange2(IPersonRepository personDao, Converter<Optional<Person>, Optional<PersonDbo>> personPersonDboConverter) {
+    public PersonServiceRefactorChange2(IPersonDao personDao, Converter<Optional<Person>, Optional<PersonDbo>> personPersonDboConverter) {
         this.personDao = personDao;
         this.personPersonDboConverter = personPersonDboConverter;
     }
