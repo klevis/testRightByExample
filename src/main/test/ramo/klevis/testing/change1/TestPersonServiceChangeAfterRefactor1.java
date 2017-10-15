@@ -14,10 +14,10 @@ import ramo.klevis.testing.model.Person;
 import ramo.klevis.testing.repository.IPersonRepository;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static ramo.klevis.testing.TestData.*;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
@@ -78,26 +78,22 @@ public class TestPersonServiceChangeAfterRefactor1 {
     @Test(expected = PersonNotExistException.class)
     public void shouldFailToUpdatePersonWhenNotExisting() {
 
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
-
-        callPersonUpdateService(dboPerson, modelPerson, false);
+        callPersonUpdateService(modelPerson, false);
 
     }
 
     @Test
     public void shouldUpdatePersonWhenExisting() {
 
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
-
-        callPersonUpdateService(dboPerson, modelPerson, true);
+        callPersonUpdateService(modelPerson, true);
 
     }
 
     private void assertPersonWasSavedWhenServiceCalled(Person modelPerson) {
         IPersonRepository mockPersonRepository = mockPersonRepository();
-        PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository,new PersonConverter());
+        PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository, new PersonConverter());
 
         Assert.assertThat(personService.savePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
@@ -114,39 +110,11 @@ public class TestPersonServiceChangeAfterRefactor1 {
         return mockPersonRepository;
     }
 
-    private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson, boolean existSocialSecurityNumber) {
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
-        PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository,new PersonConverter());
-        when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
+    private void callPersonUpdateService(Person modelPerson, boolean existSocialSecurityNumber) {
+        IPersonRepository mockPersonRepository = mockPersonRepository();
+        PersonServiceRefactoredChange1 personService = new PersonServiceRefactoredChange1(mockPersonRepository, new PersonConverter());
+        when(mockPersonRepository.exists(modelPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private PersonDbo createDboPerson() {
-        PersonDbo person = new PersonDbo();
-        person.setBirthDate(new Date());
-        person.setName("Klevis");
-        person.setSurname("Ramo");
-        person.setSocialSecurityNumber("12345");
-        return person;
-    }
-
-    private Person createModelPerson() {
-        Person person = new Person();
-        person.setBirthDate(new Date());
-        person.setName("Klevis");
-        person.setSurname("Ramo");
-        person.setSocialSecurityNumber("12345");
-        return person;
-    }
-
-    private Address createAddressModel() {
-        Address address = new Address();
-        address.setCity("Muenchen");
-        address.setCountry("Deutschland");
-        address.setStreet("SomeStreet");
-        address.setHouseNumber("12");
-        address.setPostalCode("81888");
-        return address;
-    }
 }

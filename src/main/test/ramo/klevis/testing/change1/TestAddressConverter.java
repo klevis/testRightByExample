@@ -2,10 +2,11 @@ package ramo.klevis.testing.change1;
 
 import org.hamcrest.core.Is;
 import org.junit.Test;
+import ramo.klevis.testing.TestData;
 import ramo.klevis.testing.entity.AddressDbo;
 import ramo.klevis.testing.model.Address;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by klevis.ramo on 10/15/2017.
@@ -14,7 +15,7 @@ public class TestAddressConverter {
 
     @Test
     public void convertToModel() throws Exception {
-        AddressDbo addressDbo = createAddressDbo();
+        AddressDbo addressDbo = TestData.createAddressDbo();
         Address addressModel = new AddressConverter().convertToModel(addressDbo);
         assertThat(addressDbo.getCity(), Is.is(addressModel.getCity()));
         assertThat(addressDbo.getCountry(), Is.is(addressModel.getCountry()));
@@ -25,7 +26,7 @@ public class TestAddressConverter {
 
     @Test
     public void convertToDbo() throws Exception {
-        Address addressModel = createAddressModel();
+        Address addressModel = TestData.createAddressModel();
         AddressDbo addressDbo = new AddressConverter().convertToDbo(addressModel);
         assertThat(addressDbo.getCity(), Is.is(addressModel.getCity()));
         assertThat(addressDbo.getCountry(), Is.is(addressModel.getCountry()));
@@ -34,26 +35,5 @@ public class TestAddressConverter {
         assertThat(addressDbo.getStreet(), Is.is(addressModel.getStreet()));
     }
 
-
-    private Address createAddressModel() {
-        Address address = new Address();
-        address.setCity("Muenchen");
-        address.setCountry("Deutschland");
-        address.setStreet("SomeStreet");
-        address.setHouseNumber("12");
-        address.setPostalCode("81888");
-        return address;
-    }
-
-
-    private AddressDbo createAddressDbo() {
-        AddressDbo address = new AddressDbo();
-        address.setCity("Muenchen");
-        address.setCountry("Deutschland");
-        address.setStreet("SomeStreet");
-        address.setHouseNumber("12");
-        address.setPostalCode("81888");
-        return address;
-    }
 
 }

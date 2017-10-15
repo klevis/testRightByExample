@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import ramo.klevis.testing.TestData;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
@@ -14,10 +15,10 @@ import ramo.klevis.testing.model.Person;
 import ramo.klevis.testing.repository.IPersonRepository;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static ramo.klevis.testing.TestData.createModelPerson;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
@@ -29,7 +30,7 @@ public class TestPersonServiceChange1 {
         Person modelPerson = createModelPerson();
         ArrayList<Address> addressesModelList = new ArrayList<>();
         modelPerson.setAddresses(addressesModelList);
-        Address addressModel = createAddressModel();
+        Address addressModel = TestData.createAddressModel();
         addressesModelList.add(addressModel);
 
         assertPersonWasSavedWhenServiceCalled(modelPerson);
@@ -77,21 +78,18 @@ public class TestPersonServiceChange1 {
 
     @Test(expected = PersonNotExistException.class)
     public void shouldFailToUpdatePersonWhenNotExisting() {
-
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        callPersonUpdateService(dboPerson, modelPerson, false);
+        callPersonUpdateService( modelPerson, false);
 
     }
 
     @Test
     public void shouldUpdatePersonWhenExisting() {
 
-        PersonDbo dboPerson = createDboPerson();
         Person modelPerson = createModelPerson();
 
-        callPersonUpdateService(dboPerson, modelPerson, true);
+        callPersonUpdateService(modelPerson, true);
 
     }
 
@@ -114,39 +112,12 @@ public class TestPersonServiceChange1 {
         return mockPersonRepository;
     }
 
-    private void callPersonUpdateService(PersonDbo dboPerson, Person modelPerson, boolean existSocialSecurityNumber) {
-        IPersonRepository mockPersonRepository = Mockito.mock(IPersonRepository.class);
-        when(mockPersonRepository.save((PersonDbo) any())).thenReturn(dboPerson);
+    private void callPersonUpdateService(Person modelPerson, boolean existSocialSecurityNumber) {
+        IPersonRepository mockPersonRepository = mockPersonRepository();
         PersonServiceChange1 personService = new PersonServiceChange1(mockPersonRepository);
-        when(mockPersonRepository.exists(dboPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
+        when(mockPersonRepository.exists(modelPerson.getSocialSecurityNumber())).thenReturn(existSocialSecurityNumber);
         Assert.assertThat(personService.updatePerson(modelPerson), IsEqual.equalTo(modelPerson));
     }
 
-    private PersonDbo createDboPerson() {
-        PersonDbo person = new PersonDbo();
-        person.setBirthDate(new Date());
-        person.setName("Klevis");
-        person.setSurname("Ramo");
-        person.setSocialSecurityNumber("12345");
-        return person;
-    }
 
-    private Person createModelPerson() {
-        Person person = new Person();
-        person.setBirthDate(new Date());
-        person.setName("Klevis");
-        person.setSurname("Ramo");
-        person.setSocialSecurityNumber("12345");
-        return person;
-    }
-
-    private Address createAddressModel() {
-        Address address = new Address();
-        address.setCity("Muenchen");
-        address.setCountry("Deutschland");
-        address.setStreet("SomeStreet");
-        address.setHouseNumber("12");
-        address.setPostalCode("81888");
-        return address;
-    }
 }
