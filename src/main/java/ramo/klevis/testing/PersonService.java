@@ -29,7 +29,7 @@ public class PersonService implements IPersonService {
             Person personResponse = convertAndSave(person);
             return personResponse;
         } else {
-            throw new PersonRequiredFieldsMissingException("Required Fields for Person are missing!" + person.toString());
+            throw new PersonRequiredFieldsMissingException("Required Fields for Person are missing!" + person);
         }
     }
 

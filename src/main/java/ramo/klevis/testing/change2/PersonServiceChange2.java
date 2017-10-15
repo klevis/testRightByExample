@@ -1,32 +1,28 @@
-package ramo.klevis.testing.change1;
+package ramo.klevis.testing.change2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ramo.klevis.testing.IPersonService;
-import ramo.klevis.testing.entity.AddressDbo;
+import ramo.klevis.testing.change1.Converter;
 import ramo.klevis.testing.entity.PersonDbo;
 import ramo.klevis.testing.exception.PersonNotExistException;
 import ramo.klevis.testing.exception.PersonRequiredFieldsMissingException;
-import ramo.klevis.testing.model.Address;
 import ramo.klevis.testing.model.Person;
 import ramo.klevis.testing.repository.IPersonRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by klevis.ramo on 10/12/2017.
  */
 @SuppressWarnings("ALL")
-public class PersonServiceRefactoredChange1 implements IPersonService {
+public class PersonServiceChange2 implements IPersonService {
 
     private IPersonRepository personDao;
 
     private Converter<Person, PersonDbo> personPersonDboConverter;
 
     @Autowired
-    public PersonServiceRefactoredChange1(IPersonRepository personDao, Converter<Person, PersonDbo> personPersonDboConverter) {
+    public PersonServiceChange2(IPersonRepository personDao, Converter<Person, PersonDbo> personPersonDboConverter) {
         this.personDao = personDao;
         this.personPersonDboConverter = personPersonDboConverter;
     }
@@ -63,7 +59,7 @@ public class PersonServiceRefactoredChange1 implements IPersonService {
     }
 
     private boolean areRequiredFieldFilled(Person person) {
-        return person.getBirthDate() != null &&
+        return person != null && person.getBirthDate() != null &&
                 !StringUtils.isEmpty(person.getName()) &&
                 !StringUtils.isEmpty(person.getSurname()) &&
                 !StringUtils.isEmpty(person.getSocialSecurityNumber());
