@@ -36,8 +36,7 @@ public class PersonServiceRefactoredChange1 implements IPersonService {
     public Person savePerson(Person person) {
 
         if (areRequiredFieldFilled(person)) {
-            PersonDbo savedPerson = personDao.save(personPersonDboConverter.convertToDbo(person));
-            Person personResponse = personPersonDboConverter.convertToModel(savedPerson);
+            Person personResponse = convertAndSave(person);
             return personResponse;
         } else {
             throw new PersonRequiredFieldsMissingException("Required Fields for Person are missing!" + person.toString());
@@ -50,13 +49,17 @@ public class PersonServiceRefactoredChange1 implements IPersonService {
     public Person updatePerson(Person person) {
 
         if (personDao.exists(person.getSocialSecurityNumber())) {
-            PersonDbo savedPerson = personDao.save(personPersonDboConverter.convertToDbo(person));
-            Person personResponse = personPersonDboConverter.convertToModel(savedPerson);
+            Person personResponse = convertAndSave(person);
             return personResponse;
         } else {
             throw new PersonNotExistException("Cannot Update Person is not existing");
         }
 
+    }
+
+    private Person convertAndSave(Person person) {
+        PersonDbo savedPerson = personDao.save(personPersonDboConverter.convertToDbo(person));
+        return personPersonDboConverter.convertToModel(savedPerson);
     }
 
     private boolean areRequiredFieldFilled(Person person) {

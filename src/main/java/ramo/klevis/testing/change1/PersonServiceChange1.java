@@ -33,8 +33,7 @@ public class PersonServiceChange1 implements IPersonService {
     public Person savePerson(Person person) {
 
         if (areRequiredFieldFilled(person)) {
-            PersonDbo savedPerson = personDao.save(convertToDbo(person));
-            Person personResponse = convertToModel(savedPerson);
+            Person personResponse = convertAndSave(person);
             return personResponse;
         } else {
             throw new PersonRequiredFieldsMissingException("Required Fields for Person are missing!" + person.toString());
@@ -47,13 +46,17 @@ public class PersonServiceChange1 implements IPersonService {
     public Person updatePerson(Person person) {
 
         if (personDao.exists(person.getSocialSecurityNumber())) {
-            PersonDbo savedPerson = personDao.save(convertToDbo(person));
-            Person personResponse = convertToModel(savedPerson);
+            Person personResponse = convertAndSave(person);
             return personResponse;
         } else {
             throw new PersonNotExistException("Cannot Update Person is not existing");
         }
 
+    }
+
+    private Person convertAndSave(Person person) {
+        PersonDbo savedPerson = personDao.save(convertToDbo(person));
+        return convertToModel(savedPerson);
     }
 
     /**
